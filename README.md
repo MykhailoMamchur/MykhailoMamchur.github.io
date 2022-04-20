@@ -1,2 +1,0 @@
-# MykhailoMamchur.github.io
-WEB
