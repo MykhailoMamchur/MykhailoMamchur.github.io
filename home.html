@@ -19,7 +19,7 @@
                         <a href="profile.html">Profile</a>
                     </li>
                     <li>
-                        <a href="login.html">Logout</a>
+                        <a id="logout_btn" href="#">Logout</a>
                     </li>
                 </ul>
             </nav>
@@ -33,25 +33,25 @@
                     <div>
                         <h3 class="add-left-padding">Credit Debt</h3>
                         <div class="debt-block">
-                            <h2>-540,70</h2>
+                            <h2 id="debt_amount">---</h2>
                             <h4>USD</h4>
                         </div>
                     </div>
                     <div>
                         <h3 class="add-left-padding">Last Payments</h3>
                         <div class="payments-block">
-                            <ul>
+                            <ul id="payments">
                                 <li>
-                                    <span class="color-green">+220 USD</span>
-                                    <span><b>Balance:</b> -525,7 USD</span>
+                                    <span class="color-green">--- USD</span>
+                                    <span><b>Unpaid:</b> --- USD</span>
                                 </li>
                                 <li>
-                                    <span class="color-green">+200 USD</span>
-                                    <span><b>Balance:</b> -755,7 USD</span>
+                                    <span class="color-green">--- USD</span>
+                                    <span><b>Unpaid:</b> --- USD</span>
                                 </li>
                                 <li>
-                                    <span class="color-green">+50 USD</span>
-                                    <span><b>Balance:</b> -955,7 USD</span>
+                                    <span class="color-green">--- USD</span>
+                                    <span><b>Unpaid:</b> --- USD</span>
                                 </li>
                             </ul>
                         </div>
@@ -61,14 +61,14 @@
                 <div class="home-column">
                     <h2>Quick Actions</h2>
                     <div>
-                        <div class="add-special-padding">
+                        <div id="payCredit_block" class="add-special-padding">
                             <h3>Pay a Credit</h3>
-                            <input class="input big bg-gray" type="text" name="paycreditamount" placeholder="Amount" required><br><br>
+                            <input class="input big bg-gray" type="number" min="1" name="paycreditamount" placeholder="Amount" required><br><br>
                             <button class="btn big green">Repay</button>
                         </div>
-                        <div class="add-special-padding">
+                        <div id="getCredit_block" class="add-special-padding">
                             <h3>Get a Credit</h3>
-                            <input class="input big bg-gray" type="text" name="getcreditamount" placeholder="Amount" required><br><br>
+                            <input class="input big bg-gray" type="number" min="1" name="getcreditamount" placeholder="Amount" required><br><br>
                             <button class="btn big blue">Request</button>
                         </div>
                     </div>
@@ -79,8 +79,7 @@
                 <a class="a-home-footer" href="calculate.html"><u>Calculate the Cost of a new Credit</u></a>
             </div>
         </section>
-        <div class="notification">
-            Some text for the notification.
-        </div>
+        <script src="js/common.js"></script>
+        <script src="js/home.js"></script>
     </body>
 </html>

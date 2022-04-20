@@ -16,26 +16,28 @@
                         <a class="a-selected" href="#">Admin</a>
                     </li>
                     <li>
-                        <a href="login.html">Logout</a>
+                        <a id="logout_btn" href="#">Logout</a>
                     </li>
                 </ul>
             </nav>
         </header>
         <section>
-            <div class="form-block">
+            <div id="load_user_block" class="form-block">
                 <h2>Update User</h2>
-                <input class="input" type="text" placeholder="User's Username"><br><br>
+                <input class="input" type="text" placeholder="User's ID"><br><br>
                 <button class="btn green">Load</button>
                 <br><br><br>
-                <form class="custom-form">
-                    <input class="input" type="text" name="fname" placeholder="New First Name"><br>
-                    <input class="input" type="text" name="lname" placeholder="New Last Name"><br>
-                    <input class="input" type="number" name="balance" placeholder="New Balance"><br><br>
-                    <input class="btn blue" type="submit" value="Update">
+                <form id="user_info_block" class="custom-form">
+                    <input class="input" type="text" name="firstName" placeholder="New First Name"><br>
+                    <input class="input" type="text" name="lastName" placeholder="New Last Name"><br>
+                    <input class="input" type="number" name="add_money" placeholder="Transfer Money to Balance"><br><br>
+                    <input class="btn blue" type="button" value="Update">
                 </form>
                 <br>
-                <a class="color-gray" href="#">Delete User's Account</a>
+                <a id="user_delete_btn" class="color-gray" href="#">Delete User's Account</a>
             </div>
         </section>
+        <script src="js/common.js"></script>
+        <script src="js/admin.js"></script>
     </body>
 </html>
