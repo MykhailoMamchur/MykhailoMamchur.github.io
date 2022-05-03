@@ -158,6 +158,7 @@ a:link, a:visited {
 
 .debt-block h2 {
   font-size: 2em;
+  padding-left: 0;
 }
 
 .debt-block h4 {
@@ -314,4 +315,3 @@ a:link, a:visited {
 .index-big-text {
   font-size: 2em;
 }
-/*# sourceMappingURL=base.css.map */
