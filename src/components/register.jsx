@@ -1,23 +1,24 @@
 import React, { Component } from 'react';
 import { Navigate } from 'react-router-dom';
 import NavBar from './shared/navbar';
-import Form from './shared/form';
 
 class Register extends Component {
-    inputChangeHandler = (inputObj, value) => {
-        const inputs = [...this.state.inputs];
-        const index = inputs.indexOf(inputObj);
-        inputs[index].value = value;
-        this.setState({inputs});
+    inputChangeHandler = (i, value) => {
+        let inputs = [...this.state.inputs];
+        inputs[i] = value;
+        this.setState({inputs: inputs});
     }
     
     registerHandler = (e) => {
         e.preventDefault();
 
-        let regValues = {};
-        this.state.inputs.map(input => {
-            regValues[input.name] = input.value;
-        });
+        const { inputs } = this.state;
+        let regValues = {
+            'firstName': inputs[0],
+            'lastName': inputs[1],
+            'phone': inputs[2],
+            'password': inputs[3]
+        };
 
         const request = new XMLHttpRequest();
         request.open('POST', 'http://localhost:5000/user', true);
@@ -41,26 +42,25 @@ class Register extends Component {
 
 
     state = { 
-        navbarLinks: [
-            {text: 'Login', url: '/login', selected: false}
-        ],
-        inputs: [
-            {type: 'text', name: 'firstName', placeholder: 'First Name', value: '', onInput: this.inputChangeHandler},
-            {type: 'text', name: 'lastName', placeholder: 'Last Name', value: '', onInput: this.inputChangeHandler},
-            {type: 'number', name: 'phone', placeholder: 'Phone', value: '', onInput: this.inputChangeHandler},
-            {type: 'password', name: 'password', placeholder: 'Password', value: '', onInput: this.inputChangeHandler}
-        ]
+        inputs: ['', '', '', '']
     };
 
 
     render() { 
-        const { navbarLinks, inputs, redirect } = this.state;
+        const { inputs, redirect } = this.state;
+
         return (
             <React.Fragment>
-                <NavBar links={ navbarLinks }/>
+                <NavBar links={ [{text: 'Login', url: '/login', selected: false}] }/>
                 <div className='form-block'>
                     <h2>Register Now</h2>
-                    <Form inputs={ inputs } submitHandler={ this.registerHandler } submitBtnText='Register'/>
+                    <form className="custom-form" onSubmit={ this.registerHandler }>
+                        <input value={ inputs[0] } onInput={ (e) => this.inputChangeHandler(0, e.target.value) } className="input" type="text" name="firstName" minLength="3" maxLength="32" placeholder="First Name" required/>
+                        <input value={ inputs[1] } onInput={ (e) => this.inputChangeHandler(1, e.target.value) } className="input" type="text" name="lastName" minLength="3" maxLength="32" placeholder="Last Name" required/>
+                        <input value={ inputs[2] } onInput={ (e) => this.inputChangeHandler(2, e.target.value) } className="input" type="number" name="phone" placeholder="Phone" required/>
+                        <input value={ inputs[3] } onInput={ (e) => this.inputChangeHandler(3, e.target.value) } className="input" type="password" name="password" minLength="6" maxLength="32" placeholder="Password" required/>
+                        <input className="btn blue" type="submit" value="Register"/>
+                    </form>
                 </div>
                 { redirect ? <Navigate to={ redirect } /> : '' }
             </React.Fragment>

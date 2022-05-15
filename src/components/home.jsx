@@ -125,11 +125,6 @@ class Home extends Component {
 
 
     state = {
-        navbarLinks: [
-            {text: 'Home', url: '', selected: true},
-            {text: 'Profile', url: '/profile', selected: false},
-            {text: 'Logout', url: '/logout', selected: false}
-        ],
         lastPayments: [
             {amountPaid: '---', balance: '---'},
             {amountPaid: '---', balance: '---'},
@@ -142,10 +137,15 @@ class Home extends Component {
 
 
     render() {
-        const { navbarLinks, redirect, debt, lastPayments } = this.state; 
+        const { redirect, debt, lastPayments } = this.state; 
+        
         return (
             <React.Fragment>
-                <NavBar links={ navbarLinks } />
+                <NavBar links={[
+                    {text: 'Home', url: '', selected: true},
+                    {text: 'Profile', url: '/profile', selected: false},
+                    {text: 'Logout', url: '/logout', selected: false}
+                ]} />
                 <div className="home-block">
                     <div className="home-column">
                         <h2>Statistics</h2>
