@@ -1,14 +1,12 @@
 import React, { Component } from 'react';
 import { Navigate } from 'react-router-dom';
 import NavBar from './shared/navbar';
-import Form from './shared/form';
 
 class Admin extends Component {
-    inputChangeHandler = (inputObj, value) => {
-        const inputs = [...this.state.inputs];
-        const index = inputs.indexOf(inputObj);
-        inputs[index].value = value;
-        this.setState({inputs});
+    inputChangeHandler = (i, value) => {
+        let inputs = [...this.state.inputs];
+        inputs[i] = value;
+        this.setState({inputs: inputs});
     }
 
 
@@ -22,7 +20,7 @@ class Admin extends Component {
     loadUserHandler = (e) => {
         e.preventDefault();
         
-        const userIdToChange = this.state.inputs[0].value;
+        const userIdToChange = this.state.inputs[0];
         const apiKey = localStorage.getItem('api_key');
         const request = new XMLHttpRequest();
 
@@ -45,8 +43,8 @@ class Admin extends Component {
             } else {
                 const resp = JSON.parse(request.response);
                 const inputs = [...this.state.inputs];
-                inputs[1].value = resp.firstName;
-                inputs[2].value = resp.lastName;
+                inputs[1] = resp.firstName;
+                inputs[2] = resp.lastName;
                 this.setState({inputs: inputs, loanId: resp.loanId});
             }
         };
@@ -58,10 +56,10 @@ class Admin extends Component {
         e.preventDefault();
         const { inputs, loanId } = this.state;
 
-        const userIdToChange = inputs[0].value;
-        const firstName = inputs[1].value;
-        const lastName = inputs[2].value;
-        const addMoneyAmount = inputs[3].value;
+        const userIdToChange = inputs[0];
+        const firstName = inputs[1];
+        const lastName = inputs[2];
+        const addMoneyAmount = inputs[3];
 
         if (!userIdToChange) {alert('Please load the user first!'); return;}
         const apiKey = localStorage.getItem('api_key');
@@ -109,7 +107,7 @@ class Admin extends Component {
 
 
     deleteUserHandler = () => {
-        const userIdToChange = this.state.inputs[0].value;
+        const userIdToChange = this.state.inputs[0];
         if (!userIdToChange) {alert('Please load the user first!'); return;}
         if (userIdToChange === localStorage.getItem('userId')) { alert('You cannot remove this account.'); return; }
     
@@ -142,32 +140,31 @@ class Admin extends Component {
 
 
     state = {
-        navbarLinks: [
-            {text: 'Admin', url: '', selected: true},
-            {text: 'Logout', url: '/logout', selected: false}
-        ],
-        inputs: [
-            {type: 'text-no-min', name: 'userId', placeholder: 'User\'s ID', value: '', onInput: this.inputChangeHandler},
-            {type: 'text', name: 'firstName', placeholder: 'New First Name', value: '', onInput: this.inputChangeHandler},
-            {type: 'text', name: 'lastName', placeholder: 'New Last Name', value: '', onInput: this.inputChangeHandler},
-            {type: 'number', name: 'add_money', placeholder: 'Transfer Money to Balance', value: '', required: false, onInput: this.inputChangeHandler}
-        ],
-        loanId: null,
-        redirect: null
+        inputs: ['', '', '', ''],
+        loanId: null
     };
 
 
     render() { 
-        const { navbarLinks, redirect, inputs } = this.state; 
+        const { redirect, inputs } = this.state; 
 
         return (
             <React.Fragment>
-                <NavBar links={ navbarLinks } />
+                <NavBar links={[
+                    {text: 'Admin', url: '', selected: true},
+                    {text: 'Logout', url: '/logout', selected: false}
+                ]} />
                 <div className="form-block">
                     <h2>Update User</h2>
-                    <Form inputs={ [inputs[0]] } submitHandler={ this.loadUserHandler } submitBtnText='Load' btnColor='green'/>
-                    <br/><br/>
-                    <Form inputs={ [inputs[1], inputs[2], inputs[3]] } submitHandler={ this.updateUserHandler } submitBtnText='Update'/>
+                    <input value={ inputs[0] } onInput={ (e) => this.inputChangeHandler(0, e.target.value) } className="input" type="text" placeholder="User's ID"/><br/><br/>
+                    <button onClick={ this.loadUserHandler } className="btn green">Load</button>
+                    <br/><br/><br/>
+                    <form className="custom-form" onSubmit={ this.updateUserHandler }>
+                        <input value={ inputs[1] } onInput={ (e) => this.inputChangeHandler(1, e.target.value) } className="input" type="text" name="firstName" placeholder="New First Name"/><br/>
+                        <input value={ inputs[2] } onInput={ (e) => this.inputChangeHandler(2, e.target.value) } className="input" type="text" name="lastName" placeholder="New Last Name"/><br/>
+                        <input value={ inputs[3] } onInput={ (e) => this.inputChangeHandler(3, e.target.value) } className="input" type="number" name="add_money" placeholder="Transfer Money to Balance"/><br/><br/>
+                        <input className="btn blue" type="submit" value="Update"/>
+                    </form>
                     <p className="color-gray" onClick={ this.deleteUserHandler }>Delete User's Account</p>
                 </div>
                 { redirect ? <Navigate to={ redirect } />: '' }
