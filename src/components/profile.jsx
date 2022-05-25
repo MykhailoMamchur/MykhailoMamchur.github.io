@@ -1,16 +1,15 @@
 import React, { Component } from 'react';
 import { Navigate } from 'react-router-dom';
 import NavBar from './shared/navbar';
-import Form from './shared/form';
 
 
 class Profile extends Component {
-    inputChangeHandler = (inputObj, value) => {
-        const inputs = [...this.state.inputs];
-        const index = inputs.indexOf(inputObj);
-        inputs[index].value = value;
-        this.setState({inputs});
+    inputChangeHandler = (i, value) => {
+        let inputs = [...this.state.inputs];
+        inputs[i] = value;
+        this.setState({inputs: inputs});
     }
+
 
 
     componentDidMount = () => {
@@ -39,9 +38,9 @@ class Profile extends Component {
             } else {
                 const resp = JSON.parse(request.response);
                 const inputs = [...this.state.inputs];
-                inputs[0].value = resp.firstName;
-                inputs[1].value = resp.lastName;
-                inputs[2].value = resp.phone;
+                inputs[0] = resp.firstName;
+                inputs[1] = resp.lastName;
+                inputs[2] = resp.phone;
                 this.setState({inputs});
             }
         };
@@ -52,7 +51,7 @@ class Profile extends Component {
     userUpdateHandler = (e) => {
         e.preventDefault();
         const { inputs } = this.state;
-        const body = { firstName: inputs[0].value, lastName: inputs[1].value };
+        const body = { firstName: inputs[0], lastName: inputs[1] };
         const apiKey = localStorage.getItem('api_key');
         const userId = localStorage.getItem('userId');
         
@@ -101,28 +100,28 @@ class Profile extends Component {
 
 
     state = {
-        navbarLinks: [
-            {text: 'Home', url: '/home', selected: false},
-            {text: 'Profile', url: '', selected: true},
-            {text: 'Logout', url: '/logout', selected: false}
-        ],
-        inputs: [
-            {type: 'text', name: 'firstName', placeholder: 'First Name', value: '', onInput: this.inputChangeHandler},
-            {type: 'text', name: 'lastName', placeholder: 'Last Name', value: '', onInput: this.inputChangeHandler},
-            {type: 'text', name: 'phone', placeholder: 'Phone', value: '', onInput: ()=>{}, disabled: true}
-        ]
+        inputs: ['', '', '']
     }; 
 
 
     render() { 
-        const { navbarLinks, inputs, redirect } = this.state; 
+        const { inputs, redirect } = this.state; 
 
         return (
             <React.Fragment>
-                <NavBar links={ navbarLinks } />
+                <NavBar links={[
+                    {text: 'Home', url: '/home', selected: false},
+                    {text: 'Profile', url: '', selected: true},
+                    {text: 'Logout', url: '/logout', selected: false}
+                ]} />
                 <div className="form-block">
                     <h2>Profile Information</h2>
-                    <Form inputs={ inputs } submitHandler={ this.userUpdateHandler } submitBtnText='Update'/>
+                    <form className="custom-form" onSubmit={ this.userUpdateHandler }>
+                        <input value={ inputs[0] } onInput={ (e) => this.inputChangeHandler(0, e.target.value) } className="input" type="text" name="fname" placeholder="First Name" required/><br/>
+                        <input value={ inputs[1] } onInput={ (e) => this.inputChangeHandler(1, e.target.value) } className="input" type="text" name="lname" placeholder="Last Name" required/><br/>
+                        <input value={ inputs[2] } className="input" type="text" name="phone" placeholder="Phone" disabled/><br/><br/>
+                        <input type="submit" className="btn blue" value="Update"/>
+                    </form>
                     <p className="color-gray" onClick={ this.deleteUserHandler }>Delete Account</p>
                 </div>
                 { redirect ? <Navigate to={ redirect } /> : '' }

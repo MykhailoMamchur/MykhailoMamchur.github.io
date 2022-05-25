@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Navigate } from 'react-router-dom';
 import NavBar from './shared/navbar';
+import Chat from './chat';
+import socket from '../websocket';
 
 
 class Home extends Component {
@@ -120,16 +122,24 @@ class Home extends Component {
 
 
     componentDidMount = () => {
+        socket.emit('auth', localStorage.getItem('api_key'));
+        
+        socket.on('message', (message) => {
+            let msgs = this.state.messages;
+            msgs.push(message);
+            this.setState({messages: msgs});
+        });
+
         this.loadDataHandler();
     }
 
 
+    chatSendMessageHandler = (message) => {
+        socket.emit('message', message);
+    }
+
+
     state = {
-        navbarLinks: [
-            {text: 'Home', url: '', selected: true},
-            {text: 'Profile', url: '/profile', selected: false},
-            {text: 'Logout', url: '/logout', selected: false}
-        ],
         lastPayments: [
             {amountPaid: '---', balance: '---'},
             {amountPaid: '---', balance: '---'},
@@ -137,15 +147,21 @@ class Home extends Component {
         ],
         payLoanValue: 0,
         getLoanValue: 0,
-        debt: 0
-    }; 
+        debt: 0,
+        messages: []
+    };
 
 
     render() {
-        const { navbarLinks, redirect, debt, lastPayments } = this.state; 
+        const { redirect, debt, lastPayments } = this.state; 
+        
         return (
             <React.Fragment>
-                <NavBar links={ navbarLinks } />
+                <NavBar links={[
+                    {text: 'Home', url: '', selected: true},
+                    {text: 'Profile', url: '/profile', selected: false},
+                    {text: 'Logout', url: '/logout', selected: false}
+                ]} />
                 <div className="home-block">
                     <div className="home-column">
                         <h2>Statistics</h2>
@@ -203,6 +219,8 @@ class Home extends Component {
                         </div>
                     </div>
                 </div>
+
+                <Chat messages={ this.state.messages } sendMessageHandler={ this.chatSendMessageHandler } chatId={ localStorage.getItem('userId') }/>
 
                 { redirect ? <Navigate to={ redirect } /> : '' }
             </React.Fragment>

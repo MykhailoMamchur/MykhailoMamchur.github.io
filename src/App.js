@@ -7,6 +7,7 @@ import Logout from './components/logout';
 import Admin from './components/admin';
 import Profile from './components/profile';
 import Home from './components/home';
+import Calculate from './components/calculate';
 
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
 			<Route path='/admin' element={ <Admin /> } />
 			<Route path='/profile' element={ <Profile /> } />
 			<Route path='/home' element={ <Home /> } />
+			<Route path='/calculate' element={ <Calculate /> } />
 			<Route path='/' element={ <Navigate to='/login'/> } />
 		</Routes>
 	);
