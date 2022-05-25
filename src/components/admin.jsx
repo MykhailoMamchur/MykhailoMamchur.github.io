@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Navigate } from 'react-router-dom';
 import NavBar from './shared/navbar';
+import socket from '../websocket';
+import Chat from './chat';
 
 class Admin extends Component {
     inputChangeHandler = (i, value) => {
@@ -14,6 +16,7 @@ class Admin extends Component {
         if (localStorage.getItem('userId') === null || localStorage.getItem('api_key') === null) {
             this.setState({redirect: '/logout'});
         }
+        this.chatAuthHandler();
     }
 
 
@@ -46,6 +49,8 @@ class Admin extends Component {
                 inputs[1] = resp.firstName;
                 inputs[2] = resp.lastName;
                 this.setState({inputs: inputs, loanId: resp.loanId});
+
+                this.joinChatHandler(parseInt(userIdToChange));
             }
         };
         request.onerror = () => { alert('Request failed! Please check your connection.') };
@@ -138,10 +143,32 @@ class Admin extends Component {
     }
 
 
+    chatAuthHandler = () => {
+        socket.emit('auth', localStorage.getItem('api_key'));
+        
+        socket.on('message', (message) => {
+            let msgs = this.state.messages;
+            msgs.push(message);
+            this.setState({messages: msgs});
+        });
+    }
+
+    chatSendMessageHandler = (message) => {
+        if (this.state.inputs[0] === ''){alert('Please load a user to chat with!'); return;}
+        socket.emit('message', message, parseInt(this.state.inputs[0]));
+    }
+
+
+    joinChatHandler = (userId) => {
+        this.setState({messages: []});
+        socket.emit('joinChat', userId);
+    }
+
 
     state = {
         inputs: ['', '', '', ''],
-        loanId: null
+        loanId: null,
+        messages: []
     };
 
 
@@ -167,6 +194,7 @@ class Admin extends Component {
                     </form>
                     <p className="color-gray" onClick={ this.deleteUserHandler }>Delete User's Account</p>
                 </div>
+                <Chat messages={ this.state.messages } sendMessageHandler={ this.chatSendMessageHandler } chatId={ this.state.inputs[0] }/>
                 { redirect ? <Navigate to={ redirect } />: '' }
             </React.Fragment>
         );

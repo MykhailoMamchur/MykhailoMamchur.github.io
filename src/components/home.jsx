@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Navigate } from 'react-router-dom';
 import NavBar from './shared/navbar';
+import Chat from './chat';
+import socket from '../websocket';
 
 
 class Home extends Component {
@@ -120,7 +122,20 @@ class Home extends Component {
 
 
     componentDidMount = () => {
+        socket.emit('auth', localStorage.getItem('api_key'));
+        
+        socket.on('message', (message) => {
+            let msgs = this.state.messages;
+            msgs.push(message);
+            this.setState({messages: msgs});
+        });
+
         this.loadDataHandler();
+    }
+
+
+    chatSendMessageHandler = (message) => {
+        socket.emit('message', message);
     }
 
 
@@ -132,8 +147,9 @@ class Home extends Component {
         ],
         payLoanValue: 0,
         getLoanValue: 0,
-        debt: 0
-    }; 
+        debt: 0,
+        messages: []
+    };
 
 
     render() {
@@ -203,6 +219,8 @@ class Home extends Component {
                         </div>
                     </div>
                 </div>
+
+                <Chat messages={ this.state.messages } sendMessageHandler={ this.chatSendMessageHandler } chatId={ localStorage.getItem('userId') }/>
 
                 { redirect ? <Navigate to={ redirect } /> : '' }
             </React.Fragment>
